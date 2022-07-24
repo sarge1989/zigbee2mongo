@@ -26,9 +26,7 @@ List of hardware used for the project
 
  6. [Install Mosquitto](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/) 
      - Step 6 didn't work for me when installing via VSCode SSH as install location of mosquitto, `/user/sbin`, wasn't in PATH. But Mosquitto was installed correctly in any case.
-     - I added user/password authentication to the MQTT broker
-
-After this step, Mosquitto MQTT Broker is installed, and there is another username/password to be aware of, referred to as the "MQTT_BROKER_USERNAME" and the "MQTT_BROKER_PASSWORD".
+     - I used remote access (no authentication) 
 
 ### Set Up Zigbee2MQTT
 7. Find the USB_DEVICE_ID. In the example below, the ID is `usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_b40db0772913ec11949321c7bd930c07-if00-port0`
@@ -48,9 +46,7 @@ After this step, Mosquitto MQTT Broker is installed, and there is another userna
        base_topic: zigbee2mqtt
        # MQTT server URL
        server: 'mqtt://localhost'
-       # MQTT server authentication, uncomment if required:
-       user: <MQTT_BROKER_USERNAME> #from step 6
-       password: <MQTT_BROKER_PASSWORD> #from step 6
+
      # Serial settings
      serial:
        # Location of the adapter
@@ -61,3 +57,39 @@ After this step, Mosquitto MQTT Broker is installed, and there is another userna
 10. [Start Zigbee2MQTT](https://www.zigbee2mqtt.io/guide/installation/01_linux.html#starting-zigbee2mqtt)
 11. [Run Zigbee2MQTT as daemon (in background) and start it automatically on boot](un%20Zigbee2MQTT%20as%20daemon%20%28in%20background%29%20and%20start%20it%20automatically%20on%20boot)
     - Repace `User=pi` with <RASPBERRY_PI_USERNAME> (ref step 5)
+
+## Usage
+
+### Naming Convention
+Devices should have a friendly_name of devices/\<sensorType>/\<sensorName>. This is so that the MongoDB logger can subscribe to topic `zigbee2mqtt/devices` only, to only receive messages sent by the IOT devices, and not the many messages sent by zigbee2mqtt's other functions. The sensorType will be used to distinguish the MongoDB collection - there will be 1 collection for each sensor type.
+
+### Adding a new device
+Run pairdevice.js in a new terminal to add a new device. 
+```
+node pairdevice.js
+```
+Key in the /\<sensorType>/\<sensorName> when prompted, e.g. `vibration\vibration_0`. The script will append the "device" to the friendly_name automatically.
+
+### Creating a new collection
+There should be one collection per sensorType. To create a new collection (if you're adding a new sensorType), do the following:
+1. If not already done, create a .env file in the root folder, with your own MongoDB connection string.
+   ```
+   MONGODB_CONNECTION_STRING=<YOUR MONGO DB CONNECTION STRING>
+   ```
+2. Edit line 7 in create-new-collection.js to reflect your new sensorType.
+   ```
+   const sensorType = "motion" //friendly name must start with "the sensor type". Edit to create new collection
+   ```
+3. Run create-new-collection.js in a new terminal to create a new collection.
+   ```
+   node create-new-collection.js
+   ```
+### Logging Data
+1. If not already done, create a .env file in the root folder, with your own MongoDB connection string.
+   ```
+   MONGODB_CONNECTION_STRING=<YOUR MONGO DB CONNECTION STRING>
+   ```
+2. Run zigbee2mongo.js
+   ```
+   node zigbee2mongo.js
+   ```
