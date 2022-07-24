@@ -60,15 +60,25 @@ List of hardware used for the project
 
 ## Usage
 
-### Naming Convention
-Devices should have a friendly_name of devices/\<sensorType>/\<sensorName>. This is so that the MongoDB logger can subscribe to topic `zigbee2mqtt/devices` only, to only receive messages sent by the IOT devices, and not the many messages sent by zigbee2mqtt's other functions. The sensorType will be used to distinguish the MongoDB collection - there will be 1 collection for each sensor type.
+### Repo Setup
+1. Clone the repo
+   ```
+   git -clone https://github.com/sarge1989/zigbee2mongo.git
+   ```
+2. Install repositories
+   ```
+   npm install
+   ```
 
 ### Adding a new device
 Run pairdevice.js in a new terminal to add a new device. 
 ```
 node pairdevice.js
 ```
-Key in the /\<sensorType>/\<sensorName> when prompted, e.g. `vibration\vibration_0`. The script will append the "device" to the friendly_name automatically.
+Key in the /\<sensorType>/\<sensorName> when prompted, e.g. `vibration\vibration_0`. The script will append the "device" to the friendly_name automatically. Refer to next section on naming convention.
+
+### Naming Convention
+Devices should have a friendly_name of devices/\<sensorType>/\<sensorName>. This is so that the MongoDB logger can subscribe to topic `zigbee2mqtt/devices` only, to only receive messages sent by the IOT devices, and not the many messages sent by zigbee2mqtt's other functions. The sensorType will be used to distinguish the MongoDB collection - there will be 1 collection for each sensor type.
 
 ### Creating a new collection
 There should be one collection per sensorType. To create a new collection (if you're adding a new sensorType), do the following:
