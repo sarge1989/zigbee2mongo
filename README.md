@@ -103,3 +103,41 @@ There should be one collection per sensorType. To create a new collection (if yo
    ```
    node zigbee2mongo.js
    ```
+
+### Running Logging Program On Boot via Systemd
+1. Create a systemctl configuration file for zigbee2mongo
+   ```
+   # Create a systemctl configuration file for Zigbee2MQTT
+   sudo nano /etc/systemd/system/zigbee2mongo.service
+   ```
+2. Add the following to the file
+   ```
+   [Unit]
+   Description=zigbee2mqtt.js - sends zigbee data to mongodb via mqtt bridge
+   Documentation=https://github.com/sarge1989/zigbee2mongo
+   After=zigbee2mqtt.service
+
+   [Service]
+   Type=simple
+   User= <RASPBERRY_PI_USERNAME> 
+   #take note to change this
+   ExecStart=/usr/bin/node <ABSOLUTE_PATH_TO_WORKING_DIRECTORY>/zigbee2mongo.js
+   Restart=always
+   WorkingDirectory=<ABSOLUTE_PATH_TO_WORKING_DIRECTORY>
+   RestartSec=10s
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+3. Start zigbee2mongo via systemctl
+   ```
+   sudo systemctl start zigbee2mongo
+   ```
+4. Check status
+   ```
+   systemctl status zigbee2mongo
+   ```
+5. If all is working fine, enable automatic launch on boot
+   ```
+   sudo systemctl enable zigbee2mongo
+   ```

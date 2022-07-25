@@ -1,4 +1,4 @@
-import createMQTTClient from './create_client.js'
+import createMQTTClient from './common/create-client.js'
 import dotenv from "dotenv";
 import { MongoClient } from 'mongodb'
 
@@ -6,8 +6,11 @@ dotenv.config();
 
 //create mongoDB connection
 const connURI = process.env.MONGODB_CONNECTION_STRING;
+console.log(connURI);
 var mongoClient = new MongoClient(connURI);
 const database = mongoClient.db('iot');
+await mongoClient.connect()
+
 let client = createMQTTClient()
 
 //inform on connect
