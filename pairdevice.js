@@ -49,7 +49,7 @@ function onMessage(topic, message, packet) {
                 break;
             case "successful": //on pairing...
                 let friendly_name = messageObj.data.friendly_name;
-                let description = messageObj.data.defintion.description;
+                let description = messageObj.data.definition.description;
                 console.log(`Please input <sensorType>/<sensorName> for the ${description}. E.g. vibration/table_1`);
                 let new_friendly_name = prompt("> "); //prompt for new name
                 if (new_friendly_name != "") {
